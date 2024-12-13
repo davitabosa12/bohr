@@ -1,45 +1,66 @@
 package br.ufc.mdcc.bohr;
 
 import java.util.Collection;
+import java.util.List;
 
 import br.ufc.mdcc.bohr.model.AoCSuite;
 import br.ufc.mdcc.bohr.model.Dataset;
+import br.ufc.mdcc.bohr.util.CustomReportGenerator;
 import br.ufc.mdcc.bohr.util.ReportGenerator;
 import spoon.Launcher;
 import spoon.SpoonAPI;
+import spoon.SpoonException;
+import spoon.compiler.SpoonFile;
+import spoon.support.compiler.FileSystemFile;
+import spoon.support.compiler.FileSystemFolder;
+import spoon.support.compiler.FilteringFolder;
 
 public class BohrAPI {
 
-	private static SpoonAPI spoon;
+	private static Launcher spoon;
 
 	public static Collection<AoCSuite> findAoC(String sourceCodePath, boolean generateReport) {
 		build(sourceCodePath);
 		configure();
 		process();
-		
-		if(generateReport) {
+
+		if (generateReport) {
 			ReportGenerator.generateCSVFile(Dataset.list());
 		}
-		
+
 		return Dataset.list();
 	}
-	
+
+	public static Collection<AoCSuite> findAoC(String sourceCodePath, String reportPath) {
+		build(sourceCodePath);
+		configure();
+		process();
+		CustomReportGenerator reportGenerator = new CustomReportGenerator(reportPath);
+		reportGenerator.generateCSVFile(Dataset.list());
+		return Dataset.list();
+	}
+
 	public static Collection<AoCSuite> findAoC(String sourceCodePath, String[] finders, boolean generateReport) {
 		build(sourceCodePath);
 		configure(finders);
 		process();
-		
-		if(generateReport) {
+
+		if (generateReport) {
 			ReportGenerator.generateCSVFile(Dataset.list());
 		}
-		
+
 		return Dataset.list();
 	}
 
 	private static void build(String sourceCodePath) {
 		spoon = new Launcher();
 		spoon.getEnvironment().setCommentEnabled(false);
-		spoon.addInputResource(sourceCodePath);
+		// filter test folder
+		try {
+			spoon.getModelBuilder().addInputSource(new FileSystemFolder(sourceCodePath));
+		} catch (SpoonException e) {
+			spoon.getModelBuilder().addInputSource(new FileSystemFile(sourceCodePath));
+		}
 		spoon.buildModel();
 	}
 
@@ -64,9 +85,9 @@ public class BohrAPI {
 	private static void process() {
 		spoon.process();
 	}
-	
+
 	public static void clean() {
 		Dataset.clear();
 	}
-	
+
 }

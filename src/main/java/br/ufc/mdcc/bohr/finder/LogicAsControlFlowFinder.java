@@ -20,6 +20,12 @@ import spoon.reflect.visitor.filter.TypeFilter;
 public class LogicAsControlFlowFinder extends AbstractProcessor<CtType<?>> {
 
 	public void process(CtType<?> element) {
+		String filePath = "";
+try {
+filePath = element.getPosition().getFile().getAbsolutePath();
+} catch(Exception e) {
+
+}
 		if (Util.isValid(element)) {
 			String qualifiedName = element.getQualifiedName();
 			
@@ -36,7 +42,7 @@ public class LogicAsControlFlowFinder extends AbstractProcessor<CtType<?>> {
 							int lineNumber = operator.getPosition().getLine();
 							String snippet = operator.getParent().prettyprint();
 							
-							Dataset.save(qualifiedName, new AoCInfo(AoC.LCF, lineNumber, snippet));
+							Dataset.save(qualifiedName, new AoCInfo(AoC.LCF, lineNumber, snippet, filePath));
 						}
 					} catch (SpoonException e) {
 						// TODO: handle exception

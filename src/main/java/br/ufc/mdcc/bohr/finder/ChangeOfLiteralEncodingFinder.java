@@ -17,8 +17,13 @@ import spoon.reflect.declaration.CtType;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 public class ChangeOfLiteralEncodingFinder extends AbstractProcessor<CtType<?>> {
-
 	public void process(CtType<?> element) {
+		String filePath = "";
+try {
+filePath = element.getPosition().getFile().getAbsolutePath();
+} catch(Exception e) {
+
+}
 		if (Util.isValid(element)) {
 			String qualifiedName = element.getQualifiedName();
 
@@ -30,7 +35,7 @@ public class ChangeOfLiteralEncodingFinder extends AbstractProcessor<CtType<?>> 
 						if(literal.getBase() == LiteralBase.OCTAL) {
 							int lineNumber = literal.getPosition().getEndLine();
 							String snippet = literal.getParent().prettyprint();
-							Dataset.save(qualifiedName, new AoCInfo(AoC.CLE, lineNumber, snippet));
+							Dataset.save(qualifiedName, new AoCInfo(AoC.CLE, lineNumber, snippet, filePath));
 						}
 					}
 				}

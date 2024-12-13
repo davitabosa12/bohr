@@ -81,9 +81,10 @@ public class InfixOperatorPrecedenceFinder extends AbstractProcessor<CtType<?>> 
 	}
 	
 	private void save(String qualifiedName, CtBinaryOperator<?> binaryOpr) {
+		String filePath = binaryOpr.getPosition().getFile().getAbsolutePath();
 		int lineNumber = binaryOpr.getPosition().getLine();
 		String snippet = getFullExpression(binaryOpr).getOriginalSourceFragment().getSourceCode();
-		Dataset.save(qualifiedName, new AoCInfo(AoC.IOP, lineNumber, snippet));
+		Dataset.save(qualifiedName, new AoCInfo(AoC.IOP, lineNumber, snippet, filePath));
 	}
 
 	private CtElement getFullExpression(CtElement element) {

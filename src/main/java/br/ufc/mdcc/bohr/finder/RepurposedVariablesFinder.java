@@ -114,9 +114,10 @@ public class RepurposedVariablesFinder extends AbstractProcessor<CtType<?>> {
 	}
 
 	private void save(String qualifiedName, CtLoop loop) {
+		String filePath = loop.getPosition().getFile().getAbsolutePath();
 		int lineNumber = loop.getPosition().getLine();
 		String snippet = loop.prettyprint();
-		Dataset.save(qualifiedName, new AoCInfo(AoC.RV, lineNumber, snippet));
+		Dataset.save(qualifiedName, new AoCInfo(AoC.RV, lineNumber, snippet, filePath));
 	}
 	
 }

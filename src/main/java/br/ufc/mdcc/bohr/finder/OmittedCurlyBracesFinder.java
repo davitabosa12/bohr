@@ -17,6 +17,7 @@ import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.visitor.filter.TypeFilter;
+import spoon.support.reflect.code.CtBlockImpl;
 
 public class OmittedCurlyBracesFinder extends AbstractProcessor<CtType<?>> {
 	
@@ -45,15 +46,22 @@ public class OmittedCurlyBracesFinder extends AbstractProcessor<CtType<?>> {
 	}
 	
 	private void save(String qualifiedName, CtStatement stmt, CtStatement nextStmt) {
-		Dataset.save(qualifiedName, new AoCInfo(AoC.OCB, stmt.getPosition().getLine(), stmt.prettyprint() + nextStmt.prettyprint()));
+		String filePath = stmt.getPosition().getFile().getAbsolutePath();
+		Dataset.save(qualifiedName, new AoCInfo(AoC.OCB, stmt.getPosition().getLine(), stmt.prettyprint() + nextStmt.prettyprint(), filePath));
 	}
 	
 	private void getIfElseOmitted(String qualifiedName, CtStatement stmt, CtStatement nextStmt) {
 		
 		if (stmt instanceof CtIf) {
 			CtIf ifStmt = (CtIf) stmt;
+			CtBlock<?> ifBlock;
+			try {
+				ifBlock = (CtBlock<?>) ifStmt.getThenStatement();
+			} catch (ClassCastException e) {
+				ifBlock = new CtBlockImpl<>();
+				ifBlock.addStatement(ifStmt.getThenStatement());
+			}
 			
-			CtBlock<?> ifBlock = (CtBlock<?>) ifStmt.getThenStatement();
 			
 			if (ifBlock.getStatements().size() == 1) {
 				

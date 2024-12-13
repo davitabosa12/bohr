@@ -12,6 +12,12 @@ import spoon.reflect.visitor.filter.TypeFilter;
 public class ConditionalOperatorFinder extends AbstractProcessor<CtType<?>> {
 
 	public void process(CtType<?> element) {
+		String filePath = "";
+		try {
+			filePath = element.getPosition().getFile().getAbsolutePath();
+		} catch (Exception e) {
+
+		}
 		if (Util.isValid(element)) {
 			String qualifiedName = element.getQualifiedName();
 
@@ -19,7 +25,7 @@ public class ConditionalOperatorFinder extends AbstractProcessor<CtType<?>> {
 			for (CtConditional<?> condOpr : element.getElements(filter)) {
 				int lineNumber = condOpr.getPosition().getLine();
 				String snippet = condOpr.prettyprint();
-				Dataset.save(qualifiedName, new AoCInfo(AoC.CO, lineNumber, snippet));
+				Dataset.save(qualifiedName, new AoCInfo(AoC.CO, lineNumber, snippet, filePath));
 			}
 		}
 	}

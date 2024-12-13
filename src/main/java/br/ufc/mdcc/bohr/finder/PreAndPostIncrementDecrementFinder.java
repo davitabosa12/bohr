@@ -56,22 +56,22 @@ public class PreAndPostIncrementDecrementFinder extends AbstractProcessor<CtType
 	}
 
 	private void save(String qualifiedName, CtUnaryOperator<?> unaryOpr, int lineNumber, String snippet) {
-
+		String filePath = unaryOpr.getPosition().getFile().getAbsolutePath();
 		switch (unaryOpr.getKind()) {
 		case POSTINC:
-			Dataset.save(qualifiedName, new AoCInfo(AoC.POSTINCDEC, lineNumber, snippet));
+			Dataset.save(qualifiedName, new AoCInfo(AoC.POSTINCDEC, lineNumber, snippet, filePath));
 			break;
 
 		case POSTDEC:
-			Dataset.save(qualifiedName, new AoCInfo(AoC.POSTINCDEC, lineNumber, snippet));
+			Dataset.save(qualifiedName, new AoCInfo(AoC.POSTINCDEC, lineNumber, snippet, filePath));
 			break;	
 		
 		case PREINC:
-			Dataset.save(qualifiedName, new AoCInfo(AoC.PREINCDEC, lineNumber, snippet));
+			Dataset.save(qualifiedName, new AoCInfo(AoC.PREINCDEC, lineNumber, snippet, filePath));
 			break;
 
 		case PREDEC:
-			Dataset.save(qualifiedName, new AoCInfo(AoC.PREINCDEC, lineNumber, snippet));
+			Dataset.save(qualifiedName, new AoCInfo(AoC.PREINCDEC, lineNumber, snippet, filePath));
 			break;
 
 		default:

@@ -15,6 +15,12 @@ import spoon.reflect.visitor.filter.TypeFilter;
 public class ArithmeticAsLogicFinder extends AbstractProcessor<CtType<?>> {
 
 	public void process(CtType<?> element) {
+		String filePath = "";
+try {
+filePath = element.getPosition().getFile().getAbsolutePath();
+} catch(Exception e) {
+
+}
 		if (Util.isValid(element)) {
 			String qualifiedName = element.getQualifiedName();
 
@@ -39,7 +45,7 @@ public class ArithmeticAsLogicFinder extends AbstractProcessor<CtType<?>> {
 							int lineNumber = operator.getPosition().getEndLine();
 							String snippet = operator.getParent().prettyprint();
 							
-							Dataset.save(qualifiedName, new AoCInfo(AoC.AL, lineNumber, snippet));
+							Dataset.save(qualifiedName, new AoCInfo(AoC.AL, lineNumber, snippet, filePath));
 						}
 					}
 				}
